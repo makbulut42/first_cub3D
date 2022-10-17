@@ -67,10 +67,10 @@ void makeRay(t_data *data) {
 		y2 = data->y1 + (i * sin(data->val * (data->angle)));
 		mlx_pixel_put(data->mlx_ptr, data->mlx_win, x2, y2, 0xff0000);
 	}
-
 	i = 0;
 	int k = 0, j = 10;
-	if ((data->tanAngleNeg >= 30 && data->tanAngleNeg <= 90) && (data->tanAnglePoz >= 30 && data->tanAnglePoz <= 90)){
+	if ((data->tanAngleNeg >= 30 && data->tanAngleNeg <= 90) && (data->tanAnglePoz >= 30 && data->tanAnglePoz <= 90))
+	{
 		while (j--)
 		{
 			i = -1;
@@ -83,7 +83,7 @@ void makeRay(t_data *data) {
 		while (j--)
 		{
 			i = 0;
-			while (i++ < data->tanAngleNeg )
+			while (i++ < data->tanAngleNeg)
 				mlx_pixel_put(data->mlx_ptr, data->mlx_win, data->x1 + (((int)data->y1 % 70) + k) * (-tan(data->val * i)), data->y1 - k - ((int)data->y1) % 70, 0x00ff00);
 			k += 70;
 		}}
@@ -128,9 +128,10 @@ int func(int keypress, void *arg) {
 	}
 	else if (keypress == 53)
 		exit(1);
-	if (data->angle <= -360 || data->angle >= 360) {
-		data->angle = 0;
-	}
+	if (data->angle == 365)
+		data->angle = 5;
+	if (data->angle == -5)
+		data->angle = 355;
 	if ( data->tanAngleNeg == 360 || data->tanAngleNeg == -360)
 	{
 	data->tanAngleNeg = 0;
