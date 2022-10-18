@@ -21,14 +21,17 @@ typedef struct s_data
 	double firstAngle[2];
 	double secAngle[2];
 	double thirdAngle[2];
-	double fourthAngle[2];
+	double	fourthAngle[2];
+	int		wallSize;
+	int		*wallLocationsX;
+	int		*wallLocationsY;
 }	t_data;
 
 
 char map[10][10] = {
 	"1111111111",
-	"1000000001",
-	"1000000001",
+	"1010000001",
+	"1010000001",
 	"1000000001",
 	"1000000001",
 	"1000000001",
@@ -239,12 +242,12 @@ int func(int keypress, void *arg) {
 				data->secAngle[1] = fabs(checkAngle - 120 - 90);
 			else
 				data->secAngle[1] = 0;
-			printf("0: %f, 1: %f ----angle: %f\n", data->secAngle[0], data->secAngle[1], checkAngle);
+			//printf("0: %f, 1: %f ----angle: %f\n", data->secAngle[0], data->secAngle[1], checkAngle);
 		}
 		else if (checkAngle >= 240) {
 			data->secAngle[0] = 90 - fabs(checkAngle - 240);
 			data->secAngle[1] = 0;
-			printf("0: %f, 1: %f ----angle: %f\n", data->secAngle[0], data->secAngle[1], checkAngle);
+			//printf("0: %f, 1: %f ----angle: %f\n", data->secAngle[0], data->secAngle[1], checkAngle);
 		}
 /* 		else if (checkAngle <= 330) {
 			data->secAngle[1] = fabs(30 + checkAngle);
@@ -292,16 +295,43 @@ int main() {
 	int size_line;
 	int endian;
 	data.new_img_data = (int *)mlx_get_data_addr(data.new_img, &bits_per_pixel, &size_line, &endian);
+int l, L;
 
+	data.wallSize = 0;
+	l = 0;
+	L = 0;
+	while (l < 10 && map[l]){
+		L = 0;
+		while (L < 10 && map[l][L])
+		{
+			if (map[l][L] == '1'){
+				data.wallSize++;
+				L++;
+			}
+			else
+				L++;
+		}
+		l++;
+	}
+	data.wallLocationsX = (int *)malloc(sizeof(int) * data.wallSize);
+	data.wallLocationsY = (int *)malloc(sizeof(int) * data.wallSize);
 	int x;
 	int y = 0;
 	int i = -1;
 	int j;
+	int *tmp;
+	int *tmp2;
 
+	tmp = data.wallLocationsX;
+	tmp2 = data.wallLocationsY;
 	while (++i < 10) {
 		j = -1;
 		while (++j < 10) {
 			if (map[i][j] == '1') {
+				*data.wallLocationsX = (j * 70);
+				*data.wallLocationsY = (i * 70);
+				data.wallLocationsX++;
+				data.wallLocationsY++;
 				y = 0;
 				while (y <= 68) {
 					x = 0;
@@ -316,8 +346,10 @@ int main() {
 				for (int ks = 0; ks < 70; ks++)
 					data.new_img_data[(i * 800 * 70) + (j * 70) + (x + (y * 799)) + ks] = 0xff8000;
 			} */
+			} 
 		}
-	}
+	data.wallLocationsX = tmp;
+	data.wallLocationsY = tmp2;
 	double angle, val, x1, x2, y1, y2;
 	data.val = PI / 180;
 	data.angle = 630;
