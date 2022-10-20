@@ -41,6 +41,19 @@ char map[10][10] = {
 	"1111111111",
 };
 
+int	wall_check(t_data data, int x, int y)
+{
+	int i;
+
+	i = 0;
+	while (data.wallSize > i)
+	{
+		if (data.wallLocationsX[i] <= x && (data.wallLocationsX[i] + 70) >= x && ( data.wallLocationsY[i] <= y && (data.wallLocationsY[i] + 70) >= y))
+			return (0);
+		i++;
+	}	
+	return (1);
+}
 
 void makeRay(t_data *data) {
 	double i;
