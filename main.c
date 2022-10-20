@@ -34,9 +34,9 @@ char map[10][10] = {
 	"1010000001",
 	"1000001001",
 	"1000000001",
-	"1000000001",
-	"1000000001",
-	"1000000001",
+	"1010010001",
+	"1001000001",
+	"1010010001",
 	"1000000001",
 	"1111111111",
 };
@@ -130,7 +130,6 @@ void makeRay(t_data *data) {
 			checkPozX = data->x1 + (((int)data->y1 % 70) + k)*tan(data->val * i);
 			checkPozY = data->y1 - k - ((int)data->y1) % 70;
 			if (wall_check(*data, checkPozX, checkPozY)) {
-				//drawLine(data->x1, data->y1, checkPozX, checkPozY, data);
 				break ;
 			}
 			k += 70;
@@ -140,7 +139,6 @@ void makeRay(t_data *data) {
 			checkPozY1 = data->y1 + (70 - ((int)data->x1 % 70) + k)*1/(-tan(data->val * (i)));
 			checkPozX1 = data->x1 + k + 70 - ((int)data->x1) % 70;
 			if (wall_check(*data, checkPozX1, checkPozY1)) {
-				//drawLine(data->x1, data->y1, checkPozX, checkPozY, data);
 				break ;
 			}
 			k += 70;
@@ -179,46 +177,15 @@ void makeRay(t_data *data) {
 		}
 		if (checkPozX > checkPozX1) {
 			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
-			drawLine(data->x1, data->y1, checkPozX, checkPozY, data);
+			//drawLine(data->x1, data->y1, checkPozX, checkPozY, data);
 		}
 		else {
 			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0x00ff00);
-			drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
+			//drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
 		}
 	}
 
-/*	k = 0;
-	i = data->secAngle[1];
-	while (i++ < data->secAngle[0] && i < 90)
-	{
-		k = 0;
-		while (k <= 700) {
-			checkPozX = data->x1 + (((int)data->y1 % 70) + k)*(-tan(data->val * i));
-			checkPozY = data->y1 - k - ((int)data->y1) % 70;
-			if (wall_check(* data, checkPozX, checkPozY)) {
-				mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
-				break ;
-			}
-			k += 70;
-		}
-	}*/
 
-/*	k = 0;
-	i = data->secAngle[1];
-	while (i++ < data->secAngle[0] && i < 90)
-	{
-		k = 0;
-		while (k <= 700) {
-			checkPozY = data->y1 + (((int)data->x1 % 70) + k)*(1/(-tan(data->val * i)));
-			checkPozX = data->x1 - k - ((int)data->x1) % 70;
-			if (wall_check(*data, checkPozX, checkPozY)) {
-				mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0xff0f00);
-				break ;
-			}
-			k += 70;
-		}
-	}
-	}*/
 
 }
 
@@ -291,6 +258,20 @@ int func(int keypress, void *arg) {
 			data->secAngle[0] = 90 - fabs(checkAngle - 240);
 			data->secAngle[1] = 0;
 		}
+	}
+	if ((checkAngle <= 240 && checkAngle >= 30)) {
+		if (checkAngle >= 120 && checkAngle <= 240) {
+			data->thirdAngle[0] = 90;
+			if (checkAngle >= 150 && checkAngle <= 240)
+				data->thirdAngle[1] = 90 - fabs(240 - checkAngle);
+			else
+				data->thirdAngle[1] = 0;
+		}
+		else if (checkAngle < 120) {
+			data->thirdAngle[0] = 90 - fabs(120 - checkAngle);
+			data->thirdAngle[1] = 0;
+		}
+		printf("f: %f s: %f angle: %f\n", data->thirdAngle[0], data->thirdAngle[1], checkAngle);
 	}
 	makeRay(data);
 	return (0);
