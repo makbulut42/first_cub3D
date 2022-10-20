@@ -16,12 +16,16 @@ char map[10][10] = {
 	"1111111111",
 };
 
+
 int main() {
 	t_data data;
 
+
 	data.mlx_ptr = mlx_init();
 	data.mlx_win = mlx_new_window(data.mlx_ptr, 1000, 1000, "377266");
+
  	data.new_img = mlx_new_image(data.mlx_ptr, 800, 800);
+
 	int bits_per_pixel;
 	int size_line;
 	int endian;
