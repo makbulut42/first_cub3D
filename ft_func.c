@@ -10,7 +10,23 @@ int func(int keypress, void *arg) {
 	data = (t_data *)arg;
 
 	mlx_clear_window(data->mlx_ptr, data->mlx_win);
+	int ay;
+	int ax;
+	int by;
+	int bx;
+	int cy;
+	int cx;
+	int dy;
+	int dx;
 
+	ay = data->y1 + (5 * sin((data->angle) * data->val));
+	ax = data->x1 + (5 * cos((data->angle) * data->val));
+	by = data->y1 - (5 * sin(data->angle * data->val));
+	bx = data->x1 - (5 * cos(data->angle * data->val));
+	cy = data->y1 - (5 * sin((data->angle + 90) * data->val));
+	cx = data->x1 - (5 * cos((data->angle + 90) * data->val));
+	dy = data->y1 + (5 * sin((data->angle + 90) * data->val));
+	dx = data->x1 + (5 * cos((data->angle + 90) * data->val));
 	if (keypress == 123) {
 		data->tanAnglePoz -= 5;
 		data->tanAngleNeg += 5;
@@ -22,19 +38,19 @@ int func(int keypress, void *arg) {
 		data->tanAngleNeg -= 5;
 		data->angle += 5;
 	}
-	else if (keypress == 13) {
+	else if (keypress == 13 && (wall_check(*data, ax, ay) == 0)  && (wall_check(*data, data->x1, data->y1 - 5) == 0)) {
 		data->y1 = data->y1 + (5 * sin(data->angle * data->val));
 		data->x1 = data->x1 + (5 * cos(data->angle * data->val));
 	}
-	else if (keypress == 1){
+	else if (keypress == 1 && wall_check(*data, bx, by) == 0 && (wall_check(*data, data->x1, data->y1 + 5) == 0)){
 		data->y1 = data->y1 - (5 * sin(data->angle * data->val));
 		data->x1 = data->x1 - (5 * cos(data->angle * data->val));
 	}
-	else if (keypress == 0){
+	else if (keypress == 0 && wall_check(*data, cx, cy) == 0 && (wall_check(*data, data->x1  - 5, data->y1) == 0)){
 		data->y1 = data->y1 - (5 * sin((data->angle + 90) * data->val));
 		data->x1 = data->x1 - (5 * cos((data->angle + 90) * data->val));
 	}
-	else if (keypress == 2){
+	else if (keypress == 2 && wall_check(*data, dx, dy) == 0 && (wall_check(*data, data->x1 + 5, data->y1) == 0)){
 		data->y1 = data->y1 + (5 * sin((data->angle + 90) * data->val));
 		data->x1 = data->x1 + (5 * cos((data->angle + 90) * data->val));
 	}
