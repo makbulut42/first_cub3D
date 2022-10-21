@@ -40,11 +40,11 @@ int func(int keypress, void *arg) {
 		data->tanAngleNeg -= 5;
 		data->angle += 5;
 	}
-	else if (keypress == 13 && (wall_check(*data, ax, ay) == 0)  && (wall_check(*data, data->x1, data->y1 - 5) == 0)) {
+	else if (keypress == 13 && (wall_check(*data, ax, ay) == 0) /*  && (wall_check(*data, data->x1, data->y1 - 5) == 0) */) {
 		data->y1 = data->y1 + (5 * sin(data->angle * data->val));
 		data->x1 = data->x1 + (5 * cos(data->angle * data->val));
 	}
-	else if (keypress == 1 && wall_check(*data, bx, by) == 0 && (wall_check(*data, data->x1, data->y1 + 5) == 0)){
+	else if (keypress == 1 && wall_check(*data, bx, by) == 0 /* && (wall_check(*data, data->x1, data->y1 + 5) == 0) */){
 		data->y1 = data->y1 - (5 * sin(data->angle * data->val));
 		data->x1 = data->x1 - (5 * cos(data->angle * data->val));
 	}
