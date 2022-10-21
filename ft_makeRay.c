@@ -104,4 +104,65 @@ void makeRay(t_data *data) {
 			//drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
 		}
 	}
+	i = data->thirdAngle[1];
+	while (i++ < data->thirdAngle[0] && i < 90)
+	{
+		k = 0;
+		while (k <= 700) {
+			checkPozX = data->x1 + (70 - ((int)data->y1 % 70) + k)*(-tan(data->val * i));
+			checkPozY = data->y1 + k + (70 - ((int)data->y1) % 70);
+			if (wall_check(* data, checkPozX, checkPozY)) {
+				break ;
+			}
+			k += 70;
+		}
+		k = 0;
+		while (k <= 700) {
+			checkPozY1 = data->y1 + (((int)data->x1 % 70) + k)*((1/tan(data->val * i)));
+			checkPozX1 = data->x1 - k - (((int)data->x1) % 70);
+			if (wall_check(*data, checkPozX1, checkPozY1)) {
+				break ;
+			}
+			k += 70;
+		}
+		if (checkPozX > checkPozX1) {
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
+			drawLine(data->x1, data->y1, checkPozX, checkPozY, data);
+		}
+		else {
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0x00ff00);
+			drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
+		}
+	}
+
+	i = data->fourthAngle[1];
+	while (i++ < data->fourthAngle[0] && i < 90)
+	{
+		k = 0;
+		while (k <= 700) {
+			checkPozY1 = data->x1 + (((int)data->y1 % 70) + k)*((tan(data->val * i)));
+			checkPozX1 = data->y1 - k - ((int)data->y1) % 70;
+			if (wall_check(* data, checkPozX, checkPozY)) {
+				break ;
+			}
+			k += 70;
+		}
+		k = 0;
+		while (k <= 700) {
+			checkPozY1 = data->x1 + (((int)data->y1 % 70) + k)*((-1/tan(data->val * i)));
+			checkPozX1 = data->y1 - k - (((int)data->y1) % 70);
+			if (wall_check(*data, checkPozX1, checkPozY1)) {
+				break ;
+			}
+			k += 70;
+		}
+		if (checkPozX > checkPozX1) {
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
+			drawLine(data->x1, data->y1, checkPozX, checkPozY, data);
+		}
+		else {
+			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0x00ff00);
+			drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
+		}
+	}
 }
