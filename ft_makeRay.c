@@ -42,8 +42,8 @@ void makeRay(t_data *data) {
 
 	i = 0;
 	int k;
-	i = data->firstAngle[0];
-	while (i++ < data->firstAngle[1] && i < 90)
+	i = data->firstAngle[1];
+	while (i++ < data->firstAngle[0] && i < 90)
 	{
 		k = 0;
 		while (k <= 700) {
@@ -97,11 +97,11 @@ void makeRay(t_data *data) {
 		}
 		if (checkPozX > checkPozX1) {
 			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
-			//drawLine(data->x1, data->y1, checkPozX, checkPozY, data);
+			drawLine(data->x1, data->y1, checkPozX, checkPozY, data);
 		}
 		else {
 			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0x00ff00);
-			//drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
+			drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
 		}
 	}
 	i = data->thirdAngle[1];
@@ -135,7 +135,7 @@ void makeRay(t_data *data) {
 		}
 	}
 
-	i = data->fourthAngle[1];
+	/* i = data->fourthAngle[1];
 	while (i++ < data->fourthAngle[0] && i < 90)
 	{
 		k = 0;
@@ -164,5 +164,5 @@ void makeRay(t_data *data) {
 			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0x00ff00);
 			drawLine(data->x1, data->y1, checkPozX1, checkPozY1, data);
 		}
-	}
+	} */
 }

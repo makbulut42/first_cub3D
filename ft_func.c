@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "stdio.h"
+
 int func(int keypress, void *arg) {
 
 	t_data *data;
@@ -63,18 +65,20 @@ int func(int keypress, void *arg) {
 	
 	double checkAngle = abs((int)data->angle % 360);
 	if (!(checkAngle > 60 && checkAngle < 210)) {
-		if (checkAngle >= 210 && checkAngle < 330) {
-			data->firstAngle[0] = 0;
-			data->firstAngle[1] = fabs(210 - checkAngle);
+		if (checkAngle >= 210 && checkAngle <= 300) {
+			data->firstAngle[1] = 0;
+			data->firstAngle[0] = fabs(210 - checkAngle);
 		}
 		else if (checkAngle >= 330) {
-			data->firstAngle[0] = fabs(330 - checkAngle);
-			data->firstAngle[1] = 90;
+			data->firstAngle[1] = fabs(330 - checkAngle);
+			data->firstAngle[0] = 90;
 		}
 		else if (checkAngle <= 60) {
-			data->firstAngle[0] = fabs(30 + checkAngle);
-			data->firstAngle[1] = 90;
+			data->firstAngle[1] = fabs(30 + checkAngle);
+			data->firstAngle[0] = 90;
 		}
+		printf("f: %f, s: %f angle: %f\n", data->firstAngle[0], data->firstAngle[1], checkAngle);
+
 	}
 	if (!(checkAngle > 330 && checkAngle < 120)) {
 		if (checkAngle >= 120 && checkAngle < 240) {
@@ -88,6 +92,7 @@ int func(int keypress, void *arg) {
 			data->secAngle[0] = 90 - fabs(checkAngle - 240);
 			data->secAngle[1] = 0;
 		}
+
 	}
 	if ((checkAngle <= 240 && checkAngle >= 30)) {
 		if (checkAngle >= 120 && checkAngle <= 240) {
@@ -101,19 +106,20 @@ int func(int keypress, void *arg) {
 			data->thirdAngle[0] = 90 - fabs(120 - checkAngle);
 			data->thirdAngle[1] = 0;
 		}
+
 	}
 	if (!(checkAngle < 300 && checkAngle > 150)) {
         if (!(checkAngle < 300 && checkAngle > 60)) {
             data->fourthAngle[0] = 90;
             if (checkAngle >= 300 && checkAngle < 360)
                 data->fourthAngle[1] = 90 - fabs(300 - checkAngle);
-            else if (checkAngle <= 60)
+            else if (!(checkAngle > 30))
                 data->fourthAngle[1] = 30 - checkAngle;
             else
                 data->thirdAngle[1] = 0;
         }
-        else if (checkAngle < 120) {
-            data->fourthAngle[0] = 90 - fabs(120 - checkAngle);
+        else if (checkAngle <= 150) {
+            data->fourthAngle[0] = 90 - fabs(60 - checkAngle);
             data->fourthAngle[1] = 0;
         }
 	}
