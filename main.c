@@ -93,7 +93,22 @@ int l, L;
 	data.tanAnglePoz = 60;
 	data.tanAngleNeg = 60;
 
-	float asd = 10.54f;
+	data.firstAngle[1] = 0;
+	data.firstAngle[0] = 0;
+	data.secAngle[1] = 0;
+	data.secAngle[0] = 0;
+	data.thirdAngle[1] = 0;
+	data.thirdAngle[0] = 0;
+	data.fourthAngle[1] = 0;
+	data.fourthAngle[0] = 0;
+
+/* 	data.distances = calloc(sizeof(int), 5);
+	data.distances[0] = calloc(sizeof(int), 34);
+	data.distances[1] = calloc(sizeof(int), 34);
+	data.distances[2] = calloc(sizeof(int), 34);
+	data.distances[3] = calloc(sizeof(int), 34); */
+
+	data.lastDistances = calloc(sizeof(int), 34);
 
 	mlx_put_image_to_window(data.mlx_ptr, data.mlx_win, data.new_img, 0, 0);
 	mlx_hook(data.mlx_win, 2, 0, func, (void *)&data);
