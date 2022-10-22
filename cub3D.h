@@ -23,12 +23,17 @@ typedef struct s_data
 	double	fourthAngle[2];
 	int		wallSize;
 	int		*wallLocationsX;
+	int		*wallLocationsX70;
 	int		*wallLocationsY;
+	int		*wallLocationsY70;
+
 }	t_data;
 
 int	wall_check(t_data data, int x, int y);
 void drawLine(int X0, int Y0, int X1, int Y1, t_data *data);
 void makeRay(t_data *data);
 int func(int keypress, void *arg);
+char wall_face(t_data data, int x, int y);
+void	ft_wall_location_create(int *wallLocationX, int *wallLocationY, int i, int j);
 
 #endif

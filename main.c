@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <stdio.h>
+#include <stdio.h> //silinebilir
 #include <math.h>
 #include "cub3D.h"
 
@@ -50,6 +50,8 @@ int l, L;
 	}
 	data.wallLocationsX = (int *)malloc(sizeof(int) * data.wallSize);
 	data.wallLocationsY = (int *)malloc(sizeof(int) * data.wallSize);
+    data.wallLocationsX70 = (int *)malloc(sizeof(int) * data.wallSize * 4);
+    data.wallLocationsY70 = (int *)malloc(sizeof(int) * data.wallSize * 4);
 	int x;
 	int y = 0;
 	int i = -1;
@@ -63,6 +65,7 @@ int l, L;
 		j = -1;
 		while (++j < 10) {
 			if (map[i][j] == '1') {
+				ft_wall_location_create(data.wallLocationsX70, data.wallLocationsY70, i, j);
 				*data.wallLocationsX = (j * 70);
 				*data.wallLocationsY = (i * 70);
 				data.wallLocationsX++;
