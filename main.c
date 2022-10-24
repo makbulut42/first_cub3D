@@ -37,7 +37,6 @@ void	ft_init_data_game_values(t_data *data)
 void	ft_init_data(t_data *data)
 {
 	data->mlx_ptr = mlx_init();
-	data->win2 = mlx_new_window(data->mlx_ptr, 1000, 1000, "2.Pencere");
 	data->mlx_win = mlx_new_window(data->mlx_ptr, 1000, 1000, "377266");
  	data->new_img = mlx_new_image(data->mlx_ptr, 800, 800);
 	data->new_img_data = (int *)mlx_get_data_addr(data->new_img, &data->bits_per_pixel, &data->size_line, &data->endian);
@@ -60,8 +59,6 @@ int main() {
 	mlx_put_image_to_window(data.mlx_ptr, data.mlx_win, data.new_img, 0, 0);
 	makeRay(&data);
 	mlx_hook(data.mlx_win, 2, 0, func, (void *)&data);
-	mlx_hook(data.win2, 2, 0, func, (void *)&data);
-	mlx_pixel_put(data.mlx_ptr, data.win2, 100, 100, 0xfffffff);
 	mlx_loop(data.mlx_ptr);
 	return (0);
 }
