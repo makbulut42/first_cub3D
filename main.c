@@ -16,105 +16,52 @@ char map[10][10] = {
 	"1111111111",
 };
 
+void	ft_init_data_game_values(t_data *data)
+{
+	data->val = PI / 180;
+	data->angle = 630;
+	data->x1 =  210.187407;
+	data->y1 = 309.354930;
+	data->tanAnglePoz = 60;
+	data->tanAngleNeg = 60;
+	data->firstAngle[1] = 0;
+	data->firstAngle[0] = 0;
+	data->secAngle[1] = 0;
+	data->secAngle[0] = 0;
+	data->thirdAngle[1] = 0;
+	data->thirdAngle[0] = 0;
+	data->fourthAngle[1] = 0;
+	data->fourthAngle[0] = 0;
+}
+
+void	ft_init_data(t_data *data)
+{
+	data->mlx_ptr = mlx_init();
+	data->win2 = mlx_new_window(data->mlx_ptr, 1000, 1000, "2.Pencere");
+	data->mlx_win = mlx_new_window(data->mlx_ptr, 1000, 1000, "377266");
+ 	data->new_img = mlx_new_image(data->mlx_ptr, 800, 800);
+	data->new_img_data = (int *)mlx_get_data_addr(data->new_img, &data->bits_per_pixel, &data->size_line, &data->endian);
+	ft_wall_counter(data);
+	ft_malloc_allocat(data);
+	*data = ft_put_wall(*data);
+	ft_init_data_game_values(data);
+}
 
 int main() {
 	t_data data;
 
-
-	data.mlx_ptr = mlx_init();
-	data.mlx_win = mlx_new_window(data.mlx_ptr, 1000, 1000, "377266");
-
- 	data.new_img = mlx_new_image(data.mlx_ptr, 800, 800);
-
-	int bits_per_pixel;
-	int size_line;
-	int endian;
-	data.new_img_data = (int *)mlx_get_data_addr(data.new_img, &bits_per_pixel, &size_line, &endian);
-int l, L;
-
-	data.wallSize = 0;
-	l = 0;
-	L = 0;
-	while (l < 10 && map[l]){
-		L = 0;
-		while (L < 10 && map[l][L])
-		{
-			if (map[l][L] == '1'){
-				data.wallSize++;
-				L++;
-			}
-			else
-				L++;
-		}
-		l++;
-	}
-	data.wallLocationsX = (int *)malloc(sizeof(int) * data.wallSize);
-	data.wallLocationsY = (int *)malloc(sizeof(int) * data.wallSize);
-    data.wallLocationsX70 = (int *)malloc(sizeof(int) * data.wallSize * 4);
-    data.wallLocationsY70 = (int *)malloc(sizeof(int) * data.wallSize * 4);
-	int x;
-	int y = 0;
-	int i = -1;
-	int j;
-	int *tmp;
-	int *tmp2;
-
-	tmp = data.wallLocationsX;
-	tmp2 = data.wallLocationsY;
-	while (++i < 10) {
-		j = -1;
-		while (++j < 10) {
-			if (map[i][j] == '1') {
-				ft_wall_location_create(data.wallLocationsX70, data.wallLocationsY70, i, j);
-				*data.wallLocationsX = (j * 70);
-				*data.wallLocationsY = (i * 70);
-				data.wallLocationsX++;
-				data.wallLocationsY++;
-				y = 0;
-				while (y <= 68) {
-					x = 0;
-					while (x <= 68) {
-						data.new_img_data[(i * 800 * 70) + (j * 70) + (x + (y * 800))] = 5353205;
-						x++;
-					}
-					y++;
-				}
-			}
-			/* else {
-				for (int ks = 0; ks < 70; ks++)
-					data.new_img_data[(i * 800 * 70) + (j * 70) + (x + (y * 799)) + ks] = 0xff8000;
-			} */
-			} 
-		}
-	data.wallLocationsX = tmp;
-	data.wallLocationsY = tmp2;
-	double angle, val, x1, x2, y1, y2;
-	data.val = PI / 180;
-	data.angle = 630;
-	data.x1 =  210.187407;
-	data.y1 = 309.354930;
-	data.tanAnglePoz = 60;
-	data.tanAngleNeg = 60;
-
-	data.firstAngle[1] = 0;
-	data.firstAngle[0] = 0;
-	data.secAngle[1] = 0;
-	data.secAngle[0] = 0;
-	data.thirdAngle[1] = 0;
-	data.thirdAngle[0] = 0;
-	data.fourthAngle[1] = 0;
-	data.fourthAngle[0] = 0;
-
+	ft_init_data(&data);
 /* 	data.distances = calloc(sizeof(int), 5);
 	data.distances[0] = calloc(sizeof(int), 34);
 	data.distances[1] = calloc(sizeof(int), 34);
 	data.distances[2] = calloc(sizeof(int), 34);
 	data.distances[3] = calloc(sizeof(int), 34); */
-
 	data.lastDistances = calloc(sizeof(int), 34);
-
 	mlx_put_image_to_window(data.mlx_ptr, data.mlx_win, data.new_img, 0, 0);
+	makeRay(&data);
 	mlx_hook(data.mlx_win, 2, 0, func, (void *)&data);
+	mlx_hook(data.win2, 2, 0, func, (void *)&data);
+	mlx_pixel_put(data.mlx_ptr, data.win2, 100, 100, 0xfffffff);
 	mlx_loop(data.mlx_ptr);
 	return (0);
 }

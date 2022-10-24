@@ -8,10 +8,6 @@
 int func(int keypress, void *arg) {
 
 	t_data *data;
-
-	data = (t_data *)arg;
-
-	mlx_clear_window(data->mlx_ptr, data->mlx_win);
 	int ay;
 	int ax;
 	int by;
@@ -21,6 +17,8 @@ int func(int keypress, void *arg) {
 	int dy;
 	int dx;
 
+	data = (t_data *)arg;
+	mlx_clear_window(data->mlx_ptr, data->mlx_win);
 	ay = data->y1 + (5 * sin((data->angle) * data->val));
 	ax = data->x1 + (5 * cos((data->angle) * data->val));
 	by = data->y1 - (5 * sin(data->angle * data->val));
@@ -123,7 +121,6 @@ int func(int keypress, void *arg) {
             data->fourthAngle[1] = 0;
         }
 	}
-
 	makeRay(data);
 	return (0);
 }
