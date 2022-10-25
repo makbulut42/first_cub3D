@@ -4,7 +4,7 @@ SRC = $(wildcard *.c)
 
 MAP  = map_parse/map.a
 
-OBJ = $(SRC:%.c=%.o)
+OBJ = $(SRC:%.c=./obj/%.o)
 
 CC = gcc
 
@@ -17,13 +17,15 @@ MLX = -Lmlx -lmlx -framework OpenGL -framework AppKit mlx/libmlx.a
 Libft = Libft/libft.a
 
 all : $(OBJ)
-	@$(CC) $(SRC) libmlx_macos.a -framework OpenGL -framework AppKit -o $(NAME) -fsanitize=address
+	@$(CC) $(OBJ) libmlx_macos.a -framework OpenGL -framework AppKit -o $(NAME) -ggdb
 
-%.o: %.c
+obj/%.o: %.c
+	#printf"$@"
+	@mkdir -p $(shell dirname $@)
 	@$(CC) -c $< -o $@
 
 clean :
-	@rm -rf *.o
+	@rm -rf obj
 
 fclean : clean
 	@rm -rf $(NAME)

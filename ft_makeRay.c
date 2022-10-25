@@ -50,7 +50,7 @@ void firstArea(t_data *data, int *d_idx) {
 			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
 			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
 		}
-		i += 5;
+		i += 0.1;
 	}
 }
 
@@ -90,7 +90,7 @@ void secArea(t_data *data, int *d_idx) {
 			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
 			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
 		}
-		i -= 5;
+		i -= 0.1;
 	}	
 }
 
@@ -130,7 +130,7 @@ void thirdArea(t_data *data, int *d_idx) {
 			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
 			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
 		}
-		i += 5;
+		i += 0.1;
 	}
 }
 
@@ -170,7 +170,7 @@ void fourtArea(t_data *data, int *d_idx) {
 			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
 			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
 		}
-		i -= 5;
+		i -= 0.1;
 	}
 }
 
@@ -238,7 +238,51 @@ void	ft_no_name(t_data *data)
         }
 	}
 }
+void	my_mlx_put_pixel(t_data *data, int x, int y, int color)
+{
+	int	*dst;
 
+	dst = data->new_img_data + (y * data->size_line2 + x * (data->bits_per_pixel / 8));
+	*(unsigned int*)dst = color;
+}
+void	ft_black_img(t_data *data)
+{
+	int x = 0;
+	int y = 0;
+	while (y < 1000)
+	{
+		x= 0;
+		while (x < 1000)
+		{
+        	my_mlx_put_pixel(data, x++, y, 0x000000);	
+		}
+		y++;
+	}
+		
+}
+
+void	ft_3D(t_data *data)
+{
+	int    k;
+    int l = -1;
+	static int begin;
+	
+    if (begin> 0)
+        while (++l < 1200)
+        {
+            int pixel_length = 30000/(int)(data->lastDistances[l]);
+            if (pixel_length > 200)
+                pixel_length= 200;
+            int begining_y = 350 - (pixel_length/2);
+            k = 0;
+            while(k < pixel_length){
+                my_mlx_put_pixel(data, l, begining_y++, 0xffffff);
+                k++;
+            }
+        }
+        begin++;
+	mlx_put_image_to_window(data->mlx_ptr, data->win2, data->img2,0, 0);
+}
 void makeRay(t_data *data) {
 	double i;
 	double x2;
@@ -275,10 +319,7 @@ void makeRay(t_data *data) {
 		y2 = data->y1 + (i * sin(data->val * (data->angle)));
 		mlx_pixel_put(data->mlx_ptr, data->mlx_win, x2, y2, 0xff0000);
 	}
-
-	ft_bzero(data->lastDistances, 34);
-
-
+	ft_bzero(data->lastDistances, 1500);
 	if (((int)data->angle % 360) >= 60 && ((int)data->angle % 360) <= 330) {
 		fourtArea(data, &d_idx);
 		thirdArea(data, &d_idx);
@@ -356,4 +397,5 @@ void makeRay(t_data *data) {
             data->fourthAngle[1] = 0;
         }
 	}
+	ft_3D(data);
 }
