@@ -1,5 +1,5 @@
 #include "cub3D.h"
-
+#include <stdio.h>
 char map2[10][10] = {
 	"1111111111",
 	"1010000001",
@@ -13,7 +13,7 @@ char map2[10][10] = {
 	"1111111111",
 };
 
-t_data	ft_put_wall(t_data data)
+void	ft_put_wall(t_data data)
 {
 	int x;
 	int y = 0;
@@ -29,7 +29,7 @@ t_data	ft_put_wall(t_data data)
 		while (++j < 10) {
 			if (map2[i][j] == '1') 
 			{
-					ft_wall_location_create(data.wallLocationsX4, data.wallLocationsY4, i, j);
+					ft_wall_location_create(&data, i, j);
 					*data.wallLocationsX = (j * 70);
 					*data.wallLocationsY = (i * 70);
 					data.wallLocationsX++;
@@ -50,5 +50,4 @@ t_data	ft_put_wall(t_data data)
 		}
 	data.wallLocationsX = tmp;
 	data.wallLocationsY = tmp2;
-	return (data);
 }

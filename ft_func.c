@@ -4,51 +4,28 @@
 #include <math.h>
 
 #include "stdio.h"
-
-typedef	struct s_degree
+void	ft_close_game(int keypress)
 {
-	int ay;
-	int ax;
-	int by;
-	int bx;
-	int cy;
-	int cx;
-	int dy;
-	int dx;
-}			t_degree;
-
-void	ft_degree_direction_init(t_degree *degree, t_data *data)
-{
-	degree->ay = data->y1 + (5 * sin((data->angle) * data->val));
-	degree->ax = data->x1 + (5 * cos((data->angle) * data->val));
-	degree->by = data->y1 - (5 * sin(data->angle * data->val));
-	degree->bx = data->x1 - (5 * cos(data->angle * data->val));
-	degree->cy = data->y1 - (5 * sin((data->angle + 90) * data->val));
-	degree->cx = data->x1 - (5 * cos((data->angle + 90) * data->val));
-	degree->dy = data->y1 + (5 * sin((data->angle + 90) * data->val));
-	degree->dx = data->x1 + (5 * cos((data->angle + 90) * data->val));
+	if (keypress == 53)
+		exit(1);
 }
-
-int func(int keypress, void *arg) {
-
-	t_data *data;
+int func(int keypress, t_data *data) {
 	t_degree degree;
 
-	data = (t_data *)arg;
-	mlx_clear_window(data->mlx_ptr, data->mlx_win);
 	ft_degree_direction_init(&degree, data);
-	if (keypress == 123) {
+	if (keypress == R) {
 		data->tanAnglePoz -= 5;
 		data->tanAngleNeg += 5;
 		data->angle -= 5;
 	}
-	else if (keypress == 124)
+	else if (keypress == L)
 	{
 		data->tanAnglePoz += 5;
 		data->tanAngleNeg -= 5;
 		data->angle += 5;
 	}
-	else if (keypress == 13 && (wall_check(*data, degree.ax, degree.ay) == 0)) {
+	else if (keypress == 13 && (wall_check(*data, degree.ax, degree.ay) == 0))
+	{
 		data->y1 = data->y1 + (5 * sin(data->angle * data->val));
 		data->x1 = data->x1 + (5 * cos(data->angle * data->val));
 	}
@@ -66,8 +43,8 @@ int func(int keypress, void *arg) {
 		data->y1 = data->y1 + (5 * sin((data->angle + 90) * data->val));
 		data->x1 = data->x1 + (5 * cos((data->angle + 90) * data->val));
 	}
-	else if (keypress == 53)
-		exit(1);
-	makeRay(data);
+	ft_close_game(keypress);
+	mlx_clear_window(data->mlx_ptr, data->mlx_win);
+	ft_render(*data);
 	return (0);
 }
