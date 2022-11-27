@@ -15,23 +15,21 @@ char map1[10][10] = {
 
 void	ft_wall_counter(t_data *data)
 {
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
+	int l, L;
 	data->wallSize = 0;
-	while (i < 10 && map1[i]){
-		j = 0;
-		while (j < 10 && map1[i][j])
+	l = 0;
+	L = 0;
+	while (l < 10 && map1[l]){
+		L = 0;
+		while (L < 10 && map1[l][L])
 		{
-			if (map1[i][j] == '1'){
+			if (map1[l][L] == '1'){
 				data->wallSize++;
-				j++;
+				L++;
 			}
 			else
-				j++;
+				L++;
 		}
-		i++;
+		l++;
 	}
 }

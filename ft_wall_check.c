@@ -13,6 +13,6 @@ int	wall_check(t_data data, int x, int y)
 		( data.wallLocationsY[i] <= y && (data.wallLocationsY[i] + 70) >= y))
 			return (1);
 		i++;
-	}	
+	}
 	return (0);
 }

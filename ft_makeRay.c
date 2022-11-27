@@ -4,6 +4,7 @@
 #include "unistd.h"
 
 #include "stdio.h"
+#include "string.h"
 
 void	ft_bzero(void *s, size_t n)
 {
@@ -19,8 +20,11 @@ void firstArea(t_data *data, int *d_idx) {
 	float i;
 	int checkPozX, checkPozY, checkPozX1, checkPozY1;
 
+	//printf("<-------->\n");
+
+
 	i = data->firstAngle[1];
-	while (i < data->firstAngle[0] && i < 90)
+	while (i < data->firstAngle[0])
 	{
 		k = 0;
 		while (k <= 700) {
@@ -40,20 +44,34 @@ void firstArea(t_data *data, int *d_idx) {
 			}
 			k += 70;
 		}
-		if (checkPozX < checkPozX1) {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
-			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
-			((data->y1 - checkPozY) * (data->y1 - checkPozY)));
+		float res1, res2;
+		res1 = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
+			((data->y1 - checkPozY) * (data->y1 - checkPozY)))*cos(data->val * (data->angle_distance));
+		res2 = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
+			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)))*cos(data->val * (data->angle_distance));
+		//printf("x: %d, y: %d, res1: %f, x1: %d, y1: %d, res2: %f\n", checkPozX, checkPozY, res1 , checkPozX1, checkPozY1, res2);
+
+		if (res1 == res2){
+			(*d_idx)++;
+			data->lastDistances[*d_idx] = res1;
 		}
-		else {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
-			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
-			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
+		else if (res1 < res2) {
+				img_put_pix(data, checkPozX, checkPozY, 0x00ff00);
+				// mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
+			data->lastDistances[++*d_idx] = res1;
+			data->wall_faces[*d_idx] = wall_face(*data, checkPozX, checkPozY);
 		}
-		i += 0.1;
+		else{
+			img_put_pix(data, checkPozX1, checkPozY1, 0xff0000);
+
+				// mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
+			data->lastDistances[++*d_idx] = res2;
+			data->wall_faces[*d_idx] = wall_face(*data, checkPozX1, checkPozY1);
+		}
+		i += RAYS;
+		data->angle_distance -= RAYS;
 	}
 }
-
 void secArea(t_data *data, int *d_idx) {
 	int k;
 	float i;
@@ -80,17 +98,31 @@ void secArea(t_data *data, int *d_idx) {
 			}
 			k += 70;
 		}
-		if (checkPozX > checkPozX1) {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
-			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
-			((data->y1 - checkPozY) * (data->y1 - checkPozY)));
+		float res1, res2;
+		res1 = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
+			((data->y1 - checkPozY) * (data->y1 - checkPozY)))*cos(data->val * (data->angle_distance));
+		res2 = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
+			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)))*cos(data->val * (data->angle_distance));
+		if (res1 == res2){
+			(*d_idx)++;
+			data->lastDistances[*d_idx] = res1;
+		}
+		else if (res1 < res2) {
+				img_put_pix(data, checkPozX, checkPozY, 0x00ff00);
+
+				// mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
+			data->lastDistances[++*d_idx] = res1;
+			data->wall_faces[*d_idx] = wall_face(*data, checkPozX, checkPozY);
 		}
 		else {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
-			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
-			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
+			img_put_pix(data, checkPozX1, checkPozY1, 0xff0000);
+
+				// mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
+			data->lastDistances[++*d_idx] = res2;
+			data->wall_faces[*d_idx] = wall_face(*data, checkPozX1, checkPozY1);
 		}
-		i -= 0.1;
+		i -= RAYS;
+		data->angle_distance -= RAYS;
 	}	
 }
 
@@ -100,7 +132,7 @@ void thirdArea(t_data *data, int *d_idx) {
 	int checkPozX, checkPozY, checkPozX1, checkPozY1;
 
 	i = data->thirdAngle[1];
-	while (i < data->thirdAngle[0] && i < 90)
+	while (i < data->thirdAngle[0])
 	{
 		k = 0;
 		while (k <= 700) {
@@ -120,17 +152,32 @@ void thirdArea(t_data *data, int *d_idx) {
 			}
 			k += 70;
 		}
-		if (checkPozX > checkPozX1) {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
-			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
-			((data->y1 - checkPozY) * (data->y1 - checkPozY)));
+		float res1, res2;
+		res1 = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
+			((data->y1 - checkPozY) * (data->y1 - checkPozY)))*cos(data->val * (data->angle_distance));
+		res2 = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
+			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)))*cos(data->val * (data->angle_distance));
+		if (res1 == res2){
+			(*d_idx)++;
+			data->lastDistances[*d_idx] = res1;
+		}
+		else if (res1 < res2) {
+				img_put_pix(data, checkPozX, checkPozY, 0x00ff00);
+
+			// mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
+			data->lastDistances[++*d_idx] = res1;
+			data->wall_faces[*d_idx] = wall_face(*data, checkPozX, checkPozY);
+
 		}
 		else {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
-			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
-			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
+			img_put_pix(data, checkPozX1, checkPozY1, 0xff0000);
+
+			// mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
+			data->lastDistances[++*d_idx] = res2;
+			data->wall_faces[*d_idx] = wall_face(*data, checkPozX1, checkPozY1);
 		}
-		i += 0.1;
+		i += RAYS;
+		data->angle_distance -= RAYS;
 	}
 }
 
@@ -160,129 +207,45 @@ void fourtArea(t_data *data, int *d_idx) {
 			}
 			k += 70;
  		}
-		if (checkPozX1 > checkPozX) {
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
-			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
-			((data->y1 - checkPozY) * (data->y1 - checkPozY)));
+		float res1, res2;
+		res1 = sqrt(((data->x1 - checkPozX) * (data->x1 - checkPozX)) + \
+			((data->y1 - checkPozY) * (data->y1 - checkPozY)))*cos(data->val * (data->angle_distance));
+		res2 = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
+			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)))*cos(data->val * (data->angle_distance));
+		if (res1 == res2){
+			(*d_idx)++;
+			data->lastDistances[*d_idx] = res1;
 		}
-		else if (checkPozX1 < checkPozX){
-			mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
-			data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
-			((data->y1 - checkPozY1) * (data->y1 - checkPozY1)));
-		}
-		i -= 0.1;
-	}
-}
+		else if (res2 > res1 && i != 90) {
+				img_put_pix(data, checkPozX, checkPozY, 0x00ff00);
 
-void	ft_no_name(t_data *data)
-{
-	if (data->angle == 360 || data->angle == 1080) {
-		data->angle = 720;
-	}
-	double checkAngle = abs((int)data->angle % 360);
-	if (!(checkAngle > 60 && checkAngle < 210)) {
-		if (checkAngle >= 210 && checkAngle <= 300) {
-			data->firstAngle[1] = 0;
-			data->firstAngle[0] = fabs(210 - checkAngle);
-		}
-		else if (checkAngle >= 330) {
-			data->firstAngle[1] = fabs(330 - checkAngle);
-			data->firstAngle[0] = 90;
-		}
-		else if (checkAngle <= 60) {
-			data->firstAngle[1] = fabs(30 + checkAngle);
-			data->firstAngle[0] = 90;
-		}
-	}
-	if (!(checkAngle > 330 && checkAngle < 120)) {
-		if (checkAngle >= 120 && checkAngle < 240) {
-			data->secAngle[0] = 90;
-			if (checkAngle < 210)
-				data->secAngle[1] = fabs(checkAngle - 120 - 90);
-			else
-				data->secAngle[1] = 0;
-		}
-		else if (checkAngle >= 240) {
-			data->secAngle[0] = 90 - fabs(checkAngle - 240);
-			data->secAngle[1] = 0;
-		}
+			// mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX, checkPozY, 0x00ff00);
+			data->lastDistances[++*d_idx] = res1;
+			data->wall_faces[*d_idx] = wall_face(*data, checkPozX, checkPozY);
 
-	}
-	if ((checkAngle <= 240 && checkAngle >= 30)) {
-		if (checkAngle >= 120 && checkAngle <= 240) {
-			data->thirdAngle[0] = 90;
-			if (checkAngle >= 150 && checkAngle <= 240)
-				data->thirdAngle[1] = 90 - fabs(240 - checkAngle);
-			else
-				data->thirdAngle[1] = 0;
 		}
-		else if (checkAngle < 120) {
-			data->thirdAngle[0] = 90 - fabs(120 - checkAngle);
-			data->thirdAngle[1] = 0;
+		else if (i != 90){
+			img_put_pix(data, checkPozX1, checkPozY1, 0xff0000);
+
+			// mlx_pixel_put(data->mlx_ptr, data->mlx_win, checkPozX1, checkPozY1, 0xff0000);
+			data->lastDistances[++*d_idx] = res2;
+			data->wall_faces[*d_idx] = wall_face(*data, checkPozX1, checkPozY1);
 		}
-	}
-	if (!(checkAngle < 300 && checkAngle > 150)) {
-        if (!(checkAngle < 300 && checkAngle > 60)) {
-            data->fourthAngle[0] = 90;
-            if (checkAngle >= 300 && checkAngle < 360)
-                data->fourthAngle[1] = 90 - fabs(300 - checkAngle);
-            else if (!(checkAngle > 30))
-                data->fourthAngle[1] = 30 - checkAngle;
-            else
-                data->thirdAngle[1] = 0;
-        }
-        else if (checkAngle <= 150) {
-            data->fourthAngle[0] = 90 - fabs(60 - checkAngle);
-            data->fourthAngle[1] = 0;
-        }
-	}
-}
-
-void	my_mlx_put_pixel(t_data *data, int x, int y, int color)
-{
-	int	*dst;
-
-	dst = data->new_img_data + (y * data->size_line2 + x * (data->bits_per_pixel / 8));
-	*(unsigned int*)dst = color;
-}
-
-void	ft_black_img(t_data *data)
-{
-	int x = 0;
-	int y = 0;
-	while (y < 1000)
-	{
-		x= 0;
-		while (x < 1000)
-		{
-        	my_mlx_put_pixel(data, x++, y, 0x000000);	
+		if (i == 90) {
+			k = 0;
+			while (k <= 700) {
+				checkPozX1 = 70 - ((int)data->x1 % 70) + data->x1 + k;
+				if (wall_check(*data, checkPozX1, data->y1)) {
+					data->lastDistances[++*d_idx] = sqrt(((data->x1 - checkPozX1) * (data->x1 - checkPozX1)) + \
+					((data->y1 - checkPozY1) * (data->y1 - checkPozY1)))*cos(data->val * (data->angle_distance));
+					break ;
+				}
+				k += 70;
+			}
 		}
-		y++;
+		i -= RAYS;
+		data->angle_distance -= RAYS;
 	}
-		
-}
-
-void	ft_3D(t_data *data)
-{
-	int    k;
-    int l = -1;
-	static int begin;
-	
-    if (begin> 0)
-        while (++l < 1200)
-        {
-            int pixel_length = 30000/(int)(data->lastDistances[l]);
-            if (pixel_length > 200)
-                pixel_length= 200;
-            int begining_y = 350 - (pixel_length/2);
-            k = 0;
-            while(k < pixel_length){
-                my_mlx_put_pixel(data, l, begining_y++, 0xffffff);
-                k++;
-            }
-        }
-        begin++;
-	mlx_put_image_to_window(data->mlx_ptr, data->win2, data->img2,0, 0);
 }
 
 void makeRay(t_data *data) {
@@ -290,107 +253,120 @@ void makeRay(t_data *data) {
 	double x2;
 	double y2;
 	double tmp;
+
 	int d_idx = -1;
 
-	ft_no_name(data);
-	mlx_pixel_put(data->mlx_ptr, data->mlx_win, data->x1, data->y1, 0xff0000);
+	data->angle_distance = 30;
+	// data->renderImg.imgRenger_data = mlx_get_data_addr(data->renderImg.imgRender, &data->bits_per_pixel, &data->size_line, &data->endian);
+	// printf(">>>%p\n", data->renderImg.imgRenger_data);
+
+	// mlx_pixel_put(data->mlx_ptr, data->mlx_win, data->x1, data->y1, 0xff0000);
+	
+
+	img_put_pix(data, data->x1, data->y1, 0xff0000);
+
 	i = 0;
-	data->new_img = 0;
-	while (++i < 500) {
-		x2 = data->x1 + (i * cos(data->val * (data->angle - 60)));
+	while (++i < 100) {
+		x2 = data->x1 + (i * cos(data->val * (data->angle - 30)));
 		tmp = x2 - (int)x2;
 		if (tmp > (double)0.5)
 			x2 += 1;
-		y2 = data->y1 + (i * sin(data->val * (data->angle - 60)));
+		y2 = data->y1 + (i * sin(data->val * (data->angle - 30)));
 		tmp = y2 - (int)y2;
 		if (tmp > (double)0.5)
 			y2 += 1;
-		mlx_pixel_put(data->mlx_ptr, data->mlx_win, x2, y2, 0xff0000);
+		img_put_pix(data, x2, y2, 0xff0000);
+		// mlx_pixel_put(data->mlx_ptr, data->mlx_win, x2, y2, 0xff0000);
 	}
 	i = 0;
-	while (++i < 500) {
-		x2 = data->x1 + (i * cos(data->val * (data->angle + 60)));
-		y2 = data->y1 + (i * sin(data->val * (data->angle + 60)));
-		mlx_pixel_put(data->mlx_ptr, data->mlx_win, x2, y2, 0xff0000);
+	while (++i < 100) {
+		x2 = data->x1 + (i * cos(data->val * (data->angle + 30)));
+		y2 = data->y1 + (i * sin(data->val * (data->angle + 30)));
+		img_put_pix(data, x2, y2, 0xff0000);
+		// mlx_pixel_put(data->mlx_ptr, data->mlx_win, x2, y2, 0xff0000);
 	}
 	i = 0;
 	while (++i < 100) {
 		x2 = data->x1 + (i * cos(data->val * (data->angle)));
 		y2 = data->y1 + (i * sin(data->val * (data->angle)));
-		mlx_pixel_put(data->mlx_ptr, data->mlx_win, x2, y2, 0xff0000);
+		img_put_pix(data, x2, y2, 0xff0000);
+		// mlx_pixel_put(data->mlx_ptr, data->mlx_win, x2, y2, 0xff0000);
 	}
-	ft_bzero(data->lastDistances, 1500);
-	if (((int)data->angle % 360) >= 60 && ((int)data->angle % 360) <= 330) {
-		fourtArea(data, &d_idx);
-		thirdArea(data, &d_idx);
-		secArea(data, &d_idx);
-		firstArea(data, &d_idx);
-	}
-	else {
+
+	ft_bzero(data->wall_faces, TOTALRAYS);
+	if (((int)data->angle % 360) > 300 && ((int)data->angle % 360) < 330){ 
 		secArea(data, &d_idx);
 		firstArea(data, &d_idx);
 		fourtArea(data, &d_idx);
 		thirdArea(data, &d_idx);
 	}
-	int j = -1;
-	while (++j < 24)
-		printf("%d: %f\n", j, data->lastDistances[j]);			
-	double checkAngle = abs((int)data->angle % 360);
-	if (!(checkAngle > 60 && checkAngle < 210)) {
-		if (checkAngle >= 210 && checkAngle <= 300) {
-			data->firstAngle[1] = 0;
-			data->firstAngle[0] = fabs(210 - checkAngle);
-		}
-		else if (checkAngle >= 330) {
-			data->firstAngle[1] = fabs(330 - checkAngle);
-			data->firstAngle[0] = 90;
-		}
-		else if (checkAngle <= 60) {
-			data->firstAngle[1] = fabs(30 + checkAngle);
-			data->firstAngle[0] = 90;
-		}
-		// printf("f: %f, s: %f angle: %f\n", data->firstAngle[0], data->firstAngle[1], checkAngle);
+	else if (((int)data->angle % 360) > 60 && ((int)data->angle % 360) < 330) {
+		fourtArea(data, &d_idx);
+		thirdArea(data, &d_idx);
+		secArea(data, &d_idx);
+		firstArea(data, &d_idx);
 	}
-	if (!(checkAngle > 330 && checkAngle < 120)) {
-		if (checkAngle >= 120 && checkAngle < 240) {
-			data->secAngle[0] = 90;
-			if (checkAngle < 210)
-				data->secAngle[1] = fabs(checkAngle - 120 - 90);
-			else
-				data->secAngle[1] = 0;
-		}
-		else if (checkAngle >= 240) {
-			data->secAngle[0] = 90 - fabs(checkAngle - 240);
-			data->secAngle[1] = 0;
-		}
+	else{
+		firstArea(data, &d_idx);
+		fourtArea(data, &d_idx);
+		thirdArea(data, &d_idx);
+		secArea(data, &d_idx);
 	}
-	if ((checkAngle <= 240 && checkAngle >= 30)) {
-		if (checkAngle >= 120 && checkAngle <= 240) {
-			data->thirdAngle[0] = 90;
-			if (checkAngle >= 150 && checkAngle <= 240)
-				data->thirdAngle[1] = 90 - fabs(240 - checkAngle);
-			else
-				data->thirdAngle[1] = 0;
+
+
+	mlx_put_image_to_window(data->mlx_ptr, data->mlx_win, data->new_img, 0, 0);
+
+
+	mlx_clear_window(data->mlx_ptr, data->win2);
+
+	data->renderImg.imgRender = mlx_new_image(data->mlx_ptr, 1920, 1080);
+	data->renderImg.imgRenger_data = mlx_get_data_addr(data->renderImg.imgRender, &data->renderImg.bits_per_pixel, &data->renderImg.size_line, &data->renderImg.endian);
+
+	int	k;
+	int l = 0;
+	double angle = 30;
+	while (l < TOTALRAYS)
+	{
+		if (data->lastDistances[l] < 1)
+			data->lastDistances[l] =1;
+		float	pixel_length = 120000.0f/((data->lastDistances[l]));
+		if (pixel_length > 1080)
+			pixel_length = 1080;
+		int begining_y = 540 - (pixel_length/2);
+		k = 0;
+		while(k < pixel_length){
+			if (data->wall_faces[l] == 'N' || data->wall_faces[l] == 'S')
+				img_put_pix2(data, l, begining_y, 0x0ffff0);
+			else if (data->wall_faces[l] == 'W' || data->wall_faces[l] == 'E')
+				img_put_pix2(data, l, begining_y, 0xfff000);
+			else {
+				if (ft_pozitionCheck(data, l) == 'S' || ft_pozitionCheck(data, l) == 'N')
+					img_put_pix2(data, l, begining_y, 0x0ffff0);
+				else
+					img_put_pix2(data, l, begining_y, 0xfff000);
+			}
+			begining_y += 1;
+			k+= 1;
 		}
-		else if (checkAngle < 120) {
-			data->thirdAngle[0] = 90 - fabs(120 - checkAngle);
-			data->thirdAngle[1] = 0;
-		}
+		l += 1;
+		angle -= RAYS;
 	}
-	if (!(checkAngle < 300 && checkAngle > 150)) {
-        if (!(checkAngle < 300 && checkAngle > 60)) {
-            data->fourthAngle[0] = 90;
-            if (checkAngle >= 300 && checkAngle < 360)
-                data->fourthAngle[1] = 90 - fabs(300 - checkAngle);
-            else if (!(checkAngle > 30))
-                data->fourthAngle[1] = 30 - checkAngle;
-            else
-                data->thirdAngle[1] = 0;
-        }
-        else if (checkAngle <= 150) {
-            data->fourthAngle[0] = 90 - fabs(60 - checkAngle);
-            data->fourthAngle[1] = 0;
-        }
-	}
-	//ft_3D(data);
+	mlx_put_image_to_window(data->mlx_ptr, data->win2, data->renderImg.imgRender, 0, 0);
 }
+
+/* void	img_put_pix(t_data *data, int x, int y, int color)
+{
+	char	*dst;
+
+	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	*(unsigned int*)dst = color;
+}
+
+void	take_texture(t_data *data, int x, int y, int color, int which_wall)
+{
+	char	*dst;
+	dst = data->new_img_data + (y * data->size_line + x * (data->bits_per_pixel / 8));
+	
+
+	*(unsigned int*)dst = color;
+} */

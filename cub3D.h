@@ -4,49 +4,37 @@
 #include "mlx.h"
 
 #define PI 3.14159265
-#define W 13
-#define A 0
-#define S 1
-#define D 2
-#define R 123
-#define L 124
+#define RAYS 0.03125
+#define TOTALRAYS ((1 / RAYS) * 60)
 
-typedef	struct s_degree
+typedef struct s_img
 {
-	int ay;
-	int ax;
-	int by;
-	int bx;
-	int cy;
-	int cx;
-	int dy;
-	int dx;
-}			t_degree;
+	void	*imgRender;
+	char	*imgRenger_data;
+	int		size_line;
+	int		bits_per_pixel;
+	int		endian;
+}	t_img;
+
 
 typedef struct s_data
 {
 	int bits_per_pixel;
-	int bits_per_pixel2;
 	int size_line;
-	int size_line2;
 	int endian;
-	int endian2;
 	void *new_img;
-	int *new_img_data;
-	int *new_img_data2;
-	void	*img2;
+	char *new_img_data;
 	void *mlx_ptr;
 	void *mlx_win;
 	double angle;
 	double val;
 	double x1;
 	double y1;
-	double tanAnglePoz;
-	double tanAngleNeg;
 	double firstAngle[2];
 	double secAngle[2];
 	double thirdAngle[2];
 	double	fourthAngle[2];
+	char	*wall_faces;
 	int		wallSize;
 	int		*wallLocationsX;
 	int		*wallLocationsX4;
@@ -54,19 +42,26 @@ typedef struct s_data
 	int		*wallLocationsY4;
 	void	*win2;
 	float	*lastDistances;
+	int		begin;
+	double	angle_distance;
+
+	t_img	renderImg;
 }	t_data;
 
-int		wall_check(t_data data, int x, int y);
-void	drawLine(int X0, int Y0, int X1, int Y1, t_data *data);
-void	makeRay(t_data *data);
-int		func(int keypress, t_data *data) ;
-char	wall_face(t_data data, int x, int y);
-void	ft_wall_location_create(t_data *data, int i, int j);
+int	wall_check(t_data data, int x, int y);
+void drawLine(int X0, int Y0, int X1, int Y1, t_data *data);
+void makeRay(t_data *data);
+int func(int keypress, void *arg);
+char wall_face(t_data data, int x, int y);
+void	ft_wall_location_create(int *wallLocationX, int *wallLocationY, int i, int j);
 void	ft_malloc_allocat(t_data *data);
 void	ft_wall_counter(t_data *data);
-void	ft_put_wall(t_data data);
-void	ft_degree_direction_init(t_degree *degree, t_data *data);
-void	ft_init_data(t_data *data);
-void	ft_render(t_data data);
+t_data	ft_put_wall(t_data data);
+char	ft_pozitionCheck(t_data *data, int l);
+void	img_put_pix(t_data *data, int x, int y, int color);
+void	img_put_pix2(t_data *data, int x, int y, int color);
+t_data ft_put_wall2(t_data data);
+
+
 
 #endif
